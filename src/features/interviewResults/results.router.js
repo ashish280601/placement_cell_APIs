@@ -14,8 +14,4 @@ resultRouter.post('/mark/:id', jwtAuth, (req, res) => {
     resultsController.interviewResults(req, res);
 })
 
-resultRouter.post('/excel/download', jwtAuth, (req, res) => {
-    resultsController.exportResult(req, res);
-})
-
 export default resultRouter;

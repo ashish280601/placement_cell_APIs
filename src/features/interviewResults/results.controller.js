@@ -1,5 +1,4 @@
 import ResultsRepository from "./results.repository.js";
-import xlsx from "xlsx";
 
 export default class ResultsController {
   constructor() {
@@ -99,54 +98,4 @@ export default class ResultsController {
     }
   }
 
-  async exportResult(req, res){
-    try {
-      if(!req.body){
-        return res.status(500).json({
-          data:{
-            message: "No Data found",
-            success : false
-          }
-        })
-      }
-      const results = await this.resultsRepository.getAllResults();
-
-      const worksheetData = results.map((result) => {
-        return result.students.map((student) => ({
-          interviewId: result._id,
-          studentId: student.studentId,
-          company: result.company,
-          location: result.location,
-          designation: result.designation,
-          mode: result.mode,
-          date: result.date.toISOString().split('T')[0],
-          name: student.name,
-          college: student.college,
-          batch: student.batch,
-          status: student.status,
-          'score.DSA_Score': student.score.DSA_Score,
-          'score.Web_Score': student.score.Web_Score,
-          'score.React_Score': student.score.React_Score,
-          result: student.result,
-        }));
-      }).flat();
-
-      const worksheet = xlsx.utils.json_to_sheet(worksheetData);
-    const workbook = xlsx.utils.book_new();
-    xlsx.utils.book_append_sheet(workbook, worksheet, 'Results');
-
-    const filePath = './uploads/interview_results.xlsx';
-    xlsx.writeFile(workbook, filePath);
-
-    res.download(filePath, 'interview_results.xlsx', (err) => {
-      if (err) {
-        console.error('Error sending file:', err);
-        res.status(500).send({ message: 'Error downloading file' });
-      }
-    });
-    } catch (error) {
-      console.error('Error exporting data to Excel:', error);
-      res.status(500).send({ data: { message: 'Error exporting data to Excel'}, error });
-    }
-  }
 }
