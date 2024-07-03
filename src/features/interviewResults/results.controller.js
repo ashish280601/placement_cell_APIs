@@ -36,9 +36,8 @@ export default class ResultsController {
 
   async interviewResults(req, res) {
     try {
-      const student = req.query.studentId;
       const interview = req.params.id;
-      const { result } = req.body;
+      const { result, student } = req.body;
 
       if (!student) {
         return res.status(400).json({
