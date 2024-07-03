@@ -4,8 +4,34 @@ export default class StudentsRepository {
   // get all students
   async getAllStudents() {
     try {
-        const allStudent = await StudentModel.find().populate("interviews");
-        return allStudent
+      const allStudent = await StudentModel.aggregate([
+        {
+          $lookup: {
+            from: 'interviews',
+            localField: '_id',
+            foreignField: 'students',
+            as: 'interviewDetails'
+          }
+        },
+        {
+          $project: {
+            name: 1,
+            college: 1,
+            batch: 1,
+            status: 1,
+            score: 1,
+            interviewDetails: {
+              _id: 1,
+              company: 1,
+              location: 1,
+              designation: 1,
+              mode: 1,
+              date: 1,
+            }
+          }
+        }
+      ]);
+      return allStudent
     } catch (error) {
       throw new Error(
         "Something went wrong while fetching student data from database",
