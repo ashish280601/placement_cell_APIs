@@ -32,12 +32,6 @@ const studentSchema = new mongoose.Schema({
       required: true,
     },
   },
-  interview:[
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref:"Interviews",
-    }
-  ]
 });
 
 const StudentModel = mongoose.model("Students", studentSchema);
